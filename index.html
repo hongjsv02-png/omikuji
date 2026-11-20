@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="오늘의 운세 🌸">
+<meta property="og:description" content="おみくじ를 뽑아 보세요">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+</style>
+<title>오늘의 운세 🌸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Yomogi&family=Zen+Maru+Gothic:wght@500;700&family=ZCOOL+KuaiLe&display=swap">
+<style>
+/* Layout: one centered stage that changes scene: omikuji box → fortune slip → love-letter envelope → letter → promise certificate. Pink shoujo stationery, single light look by choice. */
+:root {
+  --ground: #fde7ee;
+  --paper: #fffafc;
+  --rule: #f6cfdb;
+  --ink: #6b3f50;
+  --ink-soft: #a9798a;
+  --sakura: #f4a7bf;
+  --rose: #e05584;
+  --shrine: #d93b4a;
+  --hand: "Gaegu", "Yomogi", "Apple SD Gothic Neo", cursive;
+  --jp: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Gaegu", sans-serif;
+  --jp-hand: "Yomogi", "Zen Maru Gothic", "Gaegu", cursive;
+  color-scheme: light;
+}
+:root[lang="zh"] { --hand: "ZCOOL KuaiLe", "PingFang SC", "Yomogi", cursive; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; }
+body {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.7) 0 2px, transparent 3px) 0 0/46px 46px,
+    radial-gradient(circle at 70% 60%, rgba(244,167,191,.35) 0 2px, transparent 3px) 0 0/58px 58px,
+    var(--ground);
+  color: var(--ink);
+  font-family: var(--hand);
+  font-size: 19px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+
+.bar { position: relative; z-index: 6; max-width: 420px; margin: 0 auto; padding-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.pill { display: flex; background: rgba(255,255,255,.7); border-radius: 999px; padding: 3px; }
+.pill button { font: 500 12px var(--jp); color: var(--ink-soft); background: none; border: 0; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+.pill button[aria-pressed="true"] { background: var(--paper); color: var(--rose); box-shadow: 0 1px 4px rgba(224,85,132,.2); }
+button:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+button { touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+.stage { position: relative; z-index: 2; max-width: 420px; margin: 0 auto; padding-block: 12px 40px; min-height: calc(100vh - 70px); min-height: calc(100svh - 70px); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.scene { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes pop { from { transform: scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.kicker { font: 700 13px var(--jp); letter-spacing: .3em; color: var(--rose); margin: 0; }
+.headline { font-family: var(--hand); font-weight: 700; font-size: 30px; line-height: 1.3; margin: 0; text-wrap: balance; }
+.hint { margin: 0; color: var(--ink-soft); font-size: 17px; }
+.tap { animation: bob 1.6s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+
+/* --- omikuji box --- */
+.kuji { background: none; border: 0; padding: 0; cursor: pointer; width: 190px; }
+.kuji svg { width: 100%; display: block; overflow: visible; }
+.kuji.shake { animation: shake .9s ease-in-out; }
+@keyframes shake {
+  10%, 50% { transform: rotate(-14deg) translateY(-6px); }
+  30%, 70% { transform: rotate(14deg) translateY(-6px); }
+  90% { transform: rotate(-4deg); }
+}
+#stick { transition: transform .6s cubic-bezier(.2,1.3,.4,1); }
+.kuji.out #stick { transform: translateY(-70px); }
+
+/* --- fortune slip --- */
+.slip {
+  width: 100%; background: var(--paper); border: 2px solid var(--shrine); border-radius: 4px;
+  outline: 6px solid var(--paper); box-shadow: 0 0 0 7px var(--rule), 0 20px 40px -20px rgba(217,59,74,.4);
+  padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 12px;
+  animation: unroll .7s cubic-bezier(.2,1,.3,1) both; transform-origin: top;
+}
+@keyframes unroll { from { transform: scaleY(.05); opacity: 0; } to { transform: none; opacity: 1; } }
+.slip-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed var(--shrine); padding-bottom: 10px; }
+.slip-no { font: 500 13px var(--jp); color: var(--shrine); writing-mode: vertical-rl; letter-spacing: .15em; }
+.daikichi { font: 700 64px/1 var(--jp-hand); color: var(--shrine); letter-spacing: .08em; }
+.slip-sum { margin: 0; font-weight: 700; font-size: 22px; color: var(--ink); }
+.slip-rows { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; text-align: left; font-size: 17px; }
+.slip-rows dt { font: 500 13px var(--jp); color: var(--paper); background: var(--shrine); border-radius: 3px; padding: 2px 7px; align-self: center; text-align: center; }
+.slip-rows dd { margin: 0; min-width: 0; }
+.special { margin: 0; padding: 10px 12px; background: #fff0f4; border-radius: 10px; font-size: 18px; }
+.special b { color: var(--rose); }
+
+.btn { font: 700 20px var(--hand); padding: 12px 26px; border-radius: 999px; border: 0; cursor: pointer; background: var(--rose); color: var(--paper); box-shadow: 0 4px 0 #b83c66; transition: transform .25s cubic-bezier(.2,1.4,.4,1), background .2s; }
+.btn:active { box-shadow: 0 1px 0 #b83c66; translate: 0 3px; }
+.btn.ghost { background: var(--paper); color: var(--ink-soft); box-shadow: 0 3px 0 var(--rule); }
+
+/* --- envelope --- */
+.env { background: none; border: 0; padding: 0; cursor: pointer; width: min(280px, 78vw); aspect-ratio: 3/2; max-width: 100%; position: relative; perspective: 800px; }
+.env-body { position: absolute; inset: 0; background: #f9c3d3; border-radius: 6px; box-shadow: 0 16px 30px -14px rgba(224,85,132,.5); overflow: hidden; }
+.env-body::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top right, #f6b3c7 50%, transparent 50.5%) left/50% 100% no-repeat, linear-gradient(to top left, #f6b3c7 50%, transparent 50.5%) right/50% 100% no-repeat; }
+.env-paper { position: absolute; left: 8%; right: 8%; top: 10%; height: 80%; background: var(--paper); border-radius: 4px; transition: transform .7s .35s cubic-bezier(.2,1,.3,1); z-index: 0; }
+.env-front { position: absolute; inset: 0; z-index: 1; border-radius: 6px; background: linear-gradient(to top right, #fbd0dc 50%, transparent 50.5%) left/50% 100% no-repeat, linear-gradient(to top left, #fbd0dc 50%, transparent 50.5%) right/50% 100% no-repeat; }
+.env-flap { position: absolute; left: 0; right: 0; top: 0; height: 60%; z-index: 2; background: #f7b8cb; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform .5s ease-in; }
+.env-seal { position: absolute; left: 50%; top: 52%; translate: -50% -50%; z-index: 3; width: 46px; height: 46px; display: grid; place-items: center; transition: opacity .3s; }
+.env.open .env-flap { transform: rotateX(180deg); z-index: 0; }
+.env.open .env-seal { opacity: 0; }
+.env.open .env-paper { transform: translateY(-60%); }
+
+/* --- letter --- */
+.letter {
+  position: relative; width: 100%; background:
+    repeating-linear-gradient(to bottom, transparent 0 33px, var(--rule) 33px 34px), var(--paper);
+  background-position: 0 18px; border-radius: 6px; padding: 30px 22px 26px;
+  box-shadow: 0 20px 40px -20px rgba(224,85,132,.45);
+  display: flex; flex-direction: column; gap: 14px; align-items: center;
+}
+.letter::before, .letter::after { content: ""; position: absolute; left: 0; right: 0; height: 10px; background: radial-gradient(circle at 50% 0, var(--paper) 8px, transparent 8.5px) 0 0/18px 10px repeat-x; }
+.letter::after { bottom: -10px; }
+.letter::before { top: -10px; transform: scaleY(-1); }
+.face { font-size: 54px; line-height: 1; transition: transform .2s; }
+.face.wobble { animation: wob .4s; }
+@keyframes wob { 30% { transform: rotate(-12deg) scale(1.1); } 70% { transform: rotate(10deg); } }
+.letter p { margin: 0; }
+.letter .big { font-weight: 700; font-size: 30px; line-height: 1.3; text-wrap: balance; }
+.letter .big em { font-style: normal; color: var(--rose); }
+.choices { display: flex; gap: 18px; justify-content: center; align-items: center; flex-wrap: wrap; min-height: 130px; padding-top: 8px; }
+#later { position: relative; transition: transform .4s, left .75s cubic-bezier(.34,1.25,.5,1), top .75s cubic-bezier(.34,1.25,.5,1); z-index: 7; white-space: nowrap; }
+#later.free { position: fixed; margin: 0; }
+#later.glide { transition: transform .4s, left .09s linear, top .09s linear; }
+
+/* --- yes --- */
+.hanko { width: 96px; height: 96px; border: 4px double var(--shrine); border-radius: 50%; display: grid; place-items: center; color: var(--shrine); font: 700 28px var(--jp); transform: rotate(-10deg); animation: stamp .5s .2s cubic-bezier(.2,1.6,.4,1) both; background: rgba(255,255,255,.4); }
+@keyframes stamp { from { transform: rotate(-10deg) scale(2.2); opacity: 0; } to { transform: rotate(-10deg) scale(1); opacity: .92; } }
+.cert { position: relative; width: 100%; background: var(--paper); border-radius: 6px; padding: 22px 20px; box-shadow: 0 0 0 6px var(--paper), 0 0 0 8px var(--sakura), 0 20px 40px -18px rgba(224,85,132,.45); display: flex; flex-direction: column; gap: 10px; }
+.cert h2 { margin: 0; font: 700 15px var(--jp); letter-spacing: .3em; color: var(--rose); }
+.cert .title { margin: 0; font-weight: 700; font-size: 26px; }
+.cert .body { margin: 0; font-size: 19px; text-align: left; }
+.cert-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 6px; border-top: 1px dashed var(--rule); }
+.cert .when { font: 500 14px var(--jp); color: var(--ink-soft); font-variant-numeric: tabular-nums; margin: 0; text-align: left; }
+.cert .mini { flex: none; width: 52px; height: 52px; border: 2px solid var(--shrine); border-radius: 50%; display: grid; place-items: center; color: var(--shrine); font: 700 13px var(--jp); transform: rotate(-12deg); opacity: .85; }
+.quote { width: 100%; padding: 10px 14px; background: rgba(255,255,255,.75); border-radius: 12px; user-select: all; font-size: 18px; }
+.linkbtn { font: 400 15px var(--hand); background: none; border: 0; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.sparkle { color: var(--sakura); }
+
+@media (max-width: 380px) {
+  body { font-size: 18px; }
+  .headline, .letter .big { font-size: 26px; }
+  .daikichi { font-size: 54px; }
+  .slip { padding: 16px 14px 18px; }
+  .slip-rows { font-size: 16px; gap: 6px 10px; }
+  .letter { padding: 26px 16px 22px; }
+  .cert { padding: 20px 16px; }
+  .cert .title { font-size: 23px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene, .slip, .hanko, .tap, .kuji.shake, .face.wobble { animation: none !important; }
+  #later, .env-flap, .env-paper, #stick { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<div class="bar">
+  <div class="pill" role="group" aria-label="Music">
+    <button type="button" id="music" aria-pressed="false">♪ BGM</button>
+  </div>
+  <div class="pill" role="group" aria-label="Language">
+    <button type="button" id="lang-ko" aria-pressed="true">한국어</button>
+    <button type="button" id="lang-zh" aria-pressed="false">中文</button>
+  </div>
+</div>
+
+<main class="stage" id="stage">
+
+  <!-- 1. omikuji box -->
+  <section class="scene" id="s-box">
+    <p class="kicker">おみくじ</p>
+    <p class="headline" data-k="boxTitle"></p>
+    <button type="button" class="kuji" id="kuji" aria-label="Shake">
+      <svg viewBox="0 0 190 230" aria-hidden="true">
+        <g id="stick"><rect x="88" y="14" width="14" height="70" rx="3" fill="#f3dcb6" stroke="#d9b98a"/><text x="95" y="40" font-size="10" text-anchor="middle" fill="#d93b4a" font-family="Zen Maru Gothic">廿一</text></g>
+        <polygon points="40,60 150,60 168,80 168,214 22,214 22,80" fill="#e8455a"/>
+        <polygon points="40,60 150,60 168,80 22,80" fill="#f26b7d"/>
+        <ellipse cx="95" cy="70" rx="9" ry="4" fill="#7a2531"/>
+        <rect x="64" y="96" width="62" height="104" rx="4" fill="#fffafc"/>
+        <text x="95" y="128" font-size="22" text-anchor="middle" fill="#d93b4a" font-family="Zen Maru Gothic" font-weight="700">御</text>
+        <text x="95" y="156" font-size="22" text-anchor="middle" fill="#d93b4a" font-family="Zen Maru Gothic" font-weight="700">神</text>
+        <text x="95" y="184" font-size="22" text-anchor="middle" fill="#d93b4a" font-family="Zen Maru Gothic" font-weight="700">籤</text>
+        <path d="M30 96 l6 0 M30 110 l6 0 M154 96 l6 0 M154 110 l6 0" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <p class="hint tap" data-k="boxHint"></p>
+  </section>
+
+  <!-- 2. fortune slip -->
+  <section class="scene" id="s-slip" hidden>
+    <div class="slip">
+      <div class="slip-head">
+        <span class="slip-no">第二十一番</span>
+        <span class="daikichi">大吉</span>
+        <span class="slip-no">恋愛運</span>
+      </div>
+      <p class="slip-sum" data-k="sum"></p>
+      <dl class="slip-rows">
+        <dt>恋愛</dt><dd data-k="r1"></dd>
+        <dt>待人</dt><dd data-k="r2"></dd>
+        <dt>方角</dt><dd data-k="r3"></dd>
+        <dt>時刻</dt><dd>18:30</dd>
+        <dt>開運</dt><dd data-k="r5"></dd>
+      </dl>
+      <p class="special" data-k="special"></p>
+    </div>
+    <button type="button" class="btn" id="to-env" data-k="meet"></button>
+  </section>
+
+  <!-- 3. envelope -->
+  <section class="scene" id="s-env" hidden>
+    <p class="headline" data-k="envTitle"></p>
+    <button type="button" class="env" id="env" aria-label="Open letter">
+      <span class="env-body"></span>
+      <span class="env-paper"></span>
+      <span class="env-front"></span>
+      <span class="env-flap"></span>
+      <span class="env-seal"><svg viewBox="0 0 46 46" width="46" height="46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#e05584"/><circle cx="23" cy="23" r="17" fill="none" stroke="#fff" stroke-opacity=".4"/><path d="M23 32 C12 25 13 15 19 15 C21.5 15 23 17 23 19 C23 17 24.5 15 27 15 C33 15 34 25 23 32 Z" fill="#fffafc"/></svg></span>
+    </button>
+    <p class="hint tap" data-k="envHint"></p>
+  </section>
+
+  <!-- 4. letter -->
+  <section class="scene" id="s-letter" hidden>
+    <div class="letter">
+      <div class="face" id="face">😎</div>
+      <p data-k="hello"></p>
+      <p class="big" data-k="ask"></p>
+      <p data-k="askSub"></p>
+      <div class="choices">
+        <button type="button" class="btn" id="yes" data-k="yes"></button>
+        <button type="button" class="btn ghost" id="later"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. yes -->
+  <section class="scene" id="s-yes" hidden>
+    <div class="hanko">約束</div>
+    <p class="headline" data-k="yesTitle"></p>
+    <div class="cert" id="cert">
+      <h2>約束証明書</h2>
+      <p class="title" data-k="certTitle"></p>
+      <p class="body" data-k="certBody"></p>
+      <div class="cert-foot">
+        <p class="when">2026.11.21 · 18:30<br>同济大学</p>
+        <span class="mini">約束</span>
+      </div>
+    </div>
+    <p class="hint" data-k="shot"></p>
+    <button type="button" class="linkbtn" id="again" data-k="again"></button>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  var T = {
+    ko: {
+      boxTitle: "오늘의 운세를<br>뽑아 보세요 <span class='sparkle'>✦</span>",
+      boxHint: "통을 톡 눌러서 흔들기",
+      sum: "내일 저녁 데이트운 최고!",
+      r1: "★★★★★ 역대급으로 좋음",
+      r2: "이미 동제대 앞에서 기다리는 중",
+      r3: "同济大学 쪽이 대길",
+      r5: "따뜻한 목도리",
+      special: "특별 혜택: 지금 바로 <b>잘생긴 남자</b>를 소개해 드립니다",
+      meet: "소개받기 💌",
+      envTitle: "잘생긴 남자에게서<br>편지가 왔어요",
+      envHint: "하트를 눌러서 열기",
+      hello: "안녕, 소개받은 잘생긴 남자야.",
+      ask: "내일 저녁에<br>나랑 <em>놀래 말래?</em>",
+      askSub: "맛있는 거 먹으러 가자",
+      yes: "놀래!",
+      later: ["안 놀래", "진짜?", "다시 생각해 봐", "잘생긴 남자인데?", "운세가 대길이었잖아", "나 울 거야", "🥺", "놀래!"],
+      yesTitle: "약속했다!<br>내일 6시 반에 봐 🌸",
+      certTitle: "데이트 약속 증명서",
+      certBody: "위 사람은 내일 저녁 6시 30분, 동제대 앞에서 잘생긴 남자와 데이트하기로 약속하였으므로 이를 증명합니다. 취소는 불가합니다.",
+      shot: "캡처해서 보내 주면 접수 완료",
+      reply: "좋아! 내일 6시 반에 동제대에서 봐 🌸",
+      copy: "답장 복사하기",
+      copied: "복사됐어! 붙여서 보내 줘",
+      copyFail: "위 문장을 길게 눌러서 복사해 줘",
+      again: "처음부터 다시 보기"
+    },
+    zh: {
+      boxTitle: "来抽一支<br>今天的签吧 <span class='sparkle'>✦</span>",
+      boxHint: "点一下签筒摇一摇",
+      sum: "明晚约会运：超级好！",
+      r1: "★★★★★ 史上最佳",
+      r2: "已经在同济门口等你了",
+      r3: "同济大学方向大吉",
+      r5: "暖暖的围巾",
+      special: "特别福利：现在就为你介绍一位<b>大帅哥</b>",
+      meet: "去认识一下 💌",
+      envTitle: "大帅哥<br>给你寄了一封信",
+      envHint: "点爱心打开",
+      hello: "你好，我就是那个大帅哥。",
+      ask: "明天晚上<br><em>要不要跟我玩？</em>",
+      askSub: "一起去吃好吃的吧",
+      yes: "要！",
+      later: ["不要", "真的吗？", "再想想嘛", "我很帅的诶", "签上写着大吉哦", "我要哭了", "🥺", "要！"],
+      yesTitle: "说好了！<br>明天六点半见 🌸",
+      certTitle: "约会约定证明书",
+      certBody: "兹证明本人已约定于明天晚上六点半，在同济大学门口与大帅哥约会。不可取消。",
+      shot: "截图发给我就算登记成功",
+      reply: "好呀！明天六点半同济见 🌸",
+      copy: "复制回复",
+      copied: "已复制！粘贴发给我吧",
+      copyFail: "长按上面这句话复制",
+      again: "从头再看一遍"
+    }
+  };
+  var faces = ["😎", "😳", "🥺", "😢", "😭", "😭", "🥺", "🥰"];
+  var lang = "ko", dodges = 0;
+  var $ = function (id) { return document.getElementById(id); };
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function render() {
+    var t = T[lang];
+    document.documentElement.setAttribute("lang", lang);
+    document.querySelectorAll("[data-k]").forEach(function (el) { el.innerHTML = t[el.getAttribute("data-k")]; });
+    $("later").textContent = t.later[Math.min(dodges, t.later.length - 1)];
+    $("lang-ko").setAttribute("aria-pressed", lang === "ko");
+    $("lang-zh").setAttribute("aria-pressed", lang === "zh");
+  }
+  function go(id) {
+    ["s-box", "s-slip", "s-env", "s-letter", "s-yes"].forEach(function (s) { $(s).hidden = s !== id; });
+    window.scrollTo(0, 0);
+  }
+
+  // 1 → 2: shake the box
+  var busy = false;
+  $("kuji").onclick = function () {
+    if (busy) return; busy = true;
+    var k = this; k.classList.add("shake");
+    chime(880);
+    setTimeout(function () { k.classList.remove("shake"); k.classList.add("out"); chime(1320); }, reduce ? 0 : 900);
+    setTimeout(function () { go("s-slip"); sparkles(30); }, reduce ? 0 : 1700);
+  };
+  // 2 → 3
+  $("to-env").onclick = function () { go("s-env"); };
+  // 3 → 4: open envelope
+  $("env").onclick = function () {
+    if (this.classList.contains("open")) return;
+    this.classList.add("open"); chime(1046);
+    setTimeout(function () { go("s-letter"); hearts(20); }, reduce ? 0 : 1300);
+  };
+
+  // 4: the runaway "no"
+  var later = $("later"), yes = $("yes");
+  var lastDodge = 0;
+  function isFinal() { return dodges >= T[lang].later.length - 1; }
+  function dodge(e, px, py) {
+    if (isFinal()) return;
+    var now = Date.now(); if (now - lastDodge < 650) { if (e && e.cancelable) e.preventDefault(); return; } lastDodge = now;
+    if (e && e.cancelable) e.preventDefault();
+    var r = later.getBoundingClientRect();
+    if (!later.classList.contains("free")) {
+      later.classList.add("free"); later.style.left = r.left + "px"; later.style.top = r.top + "px";
+      void later.offsetWidth;
+    }
+    dodges++;
+    var W = innerWidth, H = innerHeight, y = yes.getBoundingClientRect(), nx, ny, tries = 0;
+    // hop a short way (90–170px) from where it is, staying on screen and off the yes button
+    do {
+      var ang = px == null ? Math.random() * Math.PI * 2
+        : Math.atan2(r.top + r.height / 2 - py, r.left + r.width / 2 - px) + (Math.random() - .5) * (1.2 + tries * .15);
+      var dist = 90 + Math.random() * 80;
+      nx = Math.min(Math.max(16, r.left + Math.cos(ang) * dist), W - r.width - 16);
+      ny = Math.min(Math.max(70, r.top + Math.sin(ang) * dist), H - r.height - 70);
+      tries++;
+    } while (tries < 30 && ((nx < y.right + 20 && nx + r.width > y.left - 20 && ny < y.bottom + 20 && ny + r.height > y.top - 20) || Math.hypot(nx - r.left, ny - r.top) < 60));
+    later.style.left = nx + "px"; later.style.top = ny + "px";
+    later.style.transform = "scale(" + Math.max(.6, 1 - dodges * .07) + ")";
+    yes.style.transform = "scale(" + Math.min(1.7, 1 + dodges * .1) + ")";
+    var f = $("face"); f.textContent = faces[Math.min(dodges, faces.length - 1)];
+    f.classList.remove("wobble"); void f.offsetWidth; f.classList.add("wobble");
+    render();
+    if (isFinal()) { later.classList.remove("ghost"); }
+    blip();
+  }
+  // mouse: the button keeps a fixed distance R from the cursor and slides away as it approaches
+  var GAP = 30, lastBump = 0, jumping = false; // px between cursor and the button's edge
+  function bump() {
+    var now = Date.now(); if (now - lastBump < 800) return; lastBump = now;
+    dodges++;
+    later.style.transform = "scale(" + Math.max(.6, 1 - dodges * .07) + ")";
+    yes.style.transform = "scale(" + Math.min(1.7, 1 + dodges * .1) + ")";
+    var f = $("face"); f.textContent = faces[Math.min(dodges, faces.length - 1)];
+    f.classList.remove("wobble"); void f.offsetWidth; f.classList.add("wobble");
+    render();
+    if (isFinal()) { later.classList.remove("ghost", "glide"); }
+    blip();
+  }
+  document.addEventListener("mousemove", function (e) {
+    if ($("s-letter").hidden || isFinal() || jumping) return;
+    var px = e.clientX, py = e.clientY, r = later.getBoundingClientRect();
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var dx = cx - px, dy = cy - py, d = Math.hypot(dx, dy);
+    if (d < 1) { dx = 1; dy = 0; d = 1; }
+    var ux = dx / d, uy = dy / d;
+    // distance from the button's center to its edge in the cursor's direction
+    var edge = Math.min(Math.abs(ux) > 1e-3 ? r.width / 2 / Math.abs(ux) : 1e9, Math.abs(uy) > 1e-3 ? r.height / 2 / Math.abs(uy) : 1e9);
+    var R = edge + GAP;
+    if (d >= R) return;
+    if (!later.classList.contains("free")) {
+      later.classList.add("free"); later.style.left = (cx - later.offsetWidth / 2) + "px"; later.style.top = (cy - later.offsetHeight / 2) + "px";
+      void later.offsetWidth;
+    }
+    later.classList.add("glide");
+    var w = later.offsetWidth, h = later.offsetHeight, W = innerWidth, H = innerHeight;
+    var tx = px + ux * R, ty = py + uy * R;
+    tx = Math.min(Math.max(16 + w / 2, tx), W - 16 - w / 2);
+    ty = Math.min(Math.max(70 + h / 2, ty), H - 70 - h / 2);
+    if (Math.hypot(tx - px, ty - py) < edge + GAP * .3) {
+      // cornered against an edge: escape to the other side of the screen
+      tx = W - tx; ty = H - ty;
+      jumping = true; later.classList.remove("glide");
+      setTimeout(function () { jumping = false; }, 750);
+    }
+    later.style.left = (tx - w / 2) + "px"; later.style.top = (ty - h / 2) + "px";
+    bump();
+  });
+  later.addEventListener("touchstart", function (e) { var t = e.touches[0]; dodge(e, t && t.clientX, t && t.clientY); }, { passive: false });
+  later.addEventListener("click", function (e) { if (isFinal()) accept(); else dodge(e); });
+  yes.addEventListener("click", accept);
+
+  function accept() {
+    later.classList.remove("free"); later.style.cssText = "";
+    go("s-yes"); hearts(70); sparkles(40); fanfare();
+  }
+  $("again").onclick = function () {
+    dodges = 0; busy = false;
+    later.classList.remove("free"); later.classList.add("ghost"); later.style.cssText = ""; yes.style.transform = "";
+    $("face").textContent = faces[0];
+    $("kuji").classList.remove("out"); $("env").classList.remove("open");
+    render(); go("s-box");
+  };
+  $("lang-ko").onclick = function () { lang = "ko"; render(); };
+  $("lang-zh").onclick = function () { lang = "zh"; render(); };
+
+  // --- sound: a little music box ---
+  var ac = null, musicOn = false, loopTimer = null;
+  function ctx() { if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } return ac; }
+  function note(freq, when, dur, vol) {
+    var a = ctx(); if (!a) return;
+    var o = a.createOscillator(), g = a.createGain(), o2 = a.createOscillator(), g2 = a.createGain();
+    o.type = "sine"; o.frequency.value = freq; o2.type = "sine"; o2.frequency.value = freq * 3.01;
+    var t = a.currentTime + when;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    g2.gain.setValueAtTime(0, t); g2.gain.linearRampToValueAtTime(vol * .25, t + .01); g2.gain.exponentialRampToValueAtTime(.0001, t + dur * .4);
+    o.connect(g).connect(a.destination); o2.connect(g2).connect(a.destination);
+    o.start(t); o2.start(t); o.stop(t + dur); o2.stop(t + dur);
+  }
+  function chime(f) { if (musicOn) note(f, 0, .8, .08); }
+  function blip() { if (musicOn) note(620 + dodges * 40, 0, .25, .06); }
+  function fanfare() { if (!musicOn) return; [784, 988, 1175, 1568].forEach(function (f, i) { note(f, i * .12, 1.2, .08); }); }
+  // original melody in C major pentatonic, two phrases
+  var mel = [[659,1],[784,1],[880,2],[784,1],[659,1],[587,2],[523,1],[587,1],[659,1],[784,1],[659,4],
+             [880,1],[1047,1],[880,1],[784,1],[659,2],[784,2],[587,1],[659,1],[587,1],[523,1],[523,4]];
+  var beat = .28;
+  function playLoop() {
+    var t = 0;
+    mel.forEach(function (m) { note(m[0], t, m[1] * beat * 2.2, .07); if (m[1] >= 2) note(m[0] / 2, t, m[1] * beat * 2, .035); t += m[1] * beat; });
+    loopTimer = setTimeout(playLoop, t * 1000 + 600);
+  }
+  $("music").onclick = function () {
+    musicOn = !musicOn; this.setAttribute("aria-pressed", musicOn);
+    var a = ctx(); if (a && a.state === "suspended") a.resume();
+    if (musicOn) playLoop(); else clearTimeout(loopTimer);
+  };
+
+  // --- falling petals, hearts, sparkles ---
+  var cv = $("fx"), g = cv.getContext("2d"), W, H, parts = [];
+  function size() { var d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; g.setTransform(d, 0, 0, d, 0, 0); }
+  function mk(kind, burst) {
+    return { k: kind, x: Math.random() * W, y: burst ? -20 - Math.random() * H * .7 : Math.random() * H,
+      r: kind === "h" ? 7 + Math.random() * 8 : kind === "s" ? 3 + Math.random() * 4 : 5 + Math.random() * 5,
+      vy: .5 + Math.random() * .8, vx: -.3 + Math.random() * .6, a: Math.random() * 6.3, va: -.03 + Math.random() * .06,
+      w: Math.random() * 6.3, life: kind === "s" ? 80 + Math.random() * 80 : Infinity,
+      c: ["244,167,191", "250,200,214", "224,85,132"][Math.floor(Math.random() * 3)], o: .55 + Math.random() * .4, tmp: !!burst };
+  }
+  function drawPetal(p) { g.beginPath(); g.moveTo(0, -p.r); g.bezierCurveTo(p.r * .9, -p.r * .6, p.r * .7, p.r * .6, 0, p.r); g.bezierCurveTo(-p.r * .7, p.r * .6, -p.r * .9, -p.r * .6, 0, -p.r); g.fill(); }
+  function drawHeart(p) { var s = p.r / 10; g.beginPath(); g.moveTo(0, 6 * s); g.bezierCurveTo(-12 * s, -2 * s, -6 * s, -12 * s, 0, -5 * s); g.bezierCurveTo(6 * s, -12 * s, 12 * s, -2 * s, 0, 6 * s); g.fill(); }
+  function drawStar(p) { g.beginPath(); for (var i = 0; i < 8; i++) { var rr = i % 2 ? p.r * .3 : p.r; var an = i * Math.PI / 4; g.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); } g.closePath(); g.fill(); }
+  function frame() {
+    g.clearRect(0, 0, W, H);
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i];
+      p.w += .02; p.x += p.vx + Math.sin(p.w) * .4; p.y += p.vy; p.a += p.va; p.life--;
+      if (p.y > H + 30 || p.life <= 0) { if (p.tmp) { parts.splice(i, 1); continue; } parts[i] = mk(p.k, true); parts[i].tmp = false; continue; }
+      g.save(); g.translate(p.x, p.y); g.rotate(p.k === "h" ? Math.sin(p.w) * .3 : p.a);
+      g.fillStyle = "rgba(" + (p.k === "s" ? "255,255,255" : p.c) + "," + (p.k === "s" ? Math.min(1, p.life / 40) : p.o) + ")";
+      (p.k === "h" ? drawHeart : p.k === "s" ? drawStar : drawPetal)(p);
+      g.restore();
+    }
+    requestAnimationFrame(frame);
+  }
+  function hearts(n) { if (reduce) return; for (var i = 0; i < n; i++) parts.push(mk(Math.random() < .6 ? "h" : "p", true)); }
+  function sparkles(n) { if (reduce) return; for (var i = 0; i < n; i++) { var s = mk("s", false); s.tmp = true; s.vy = -.2 + Math.random() * .4; parts.push(s); } }
+  size(); addEventListener("resize", size);
+  for (var i = 0; i < 14; i++) parts.push(mk("p", false));
+  if (reduce) { g.clearRect(0, 0, W, H); } else requestAnimationFrame(frame);
+
+  render();
+})();
+</script>
+
+</body>
+</html>
